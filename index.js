@@ -86,28 +86,33 @@ app.get('/v1/all', async (req, res, next) => {
 })
 
 
-app.post('/v1/new/favorite', (req, res, ) => {
+app.post('/v1/new/favorite', (req, res, next) => {
   const { poster_path, title, release_date, original_language, vote_count, vote_average, overview, movieID, sessionID } = req.body
 
-  Favorite.create({
-    poster_path,
-    title,
-    release_date,
-    original_language,
-    vote_count,
-    vote_average,
-    overview,
-    movieID,
-    sessionID
-  })
-    .then((favorite) => {
-      res.json(favorite);
-    });
+  try {
 
+    Favorite.create({
+      poster_path,
+      title,
+      release_date,
+      original_language,
+      vote_count,
+      vote_average,
+      overview,
+      movieID,
+      sessionID
+    })
+      .then((favorite) => {
+        res.json(favorite);
+      });
+  } catch (err) {
+    res.status(err.response ? err.response.status : 500).send(err.response ? err.response.data : 'Internal error')
+    next(err)
+  }
 });
 
 
-// app.post('/v1/new/favorite/list', (req, res, next) => {
+// app.post('/v1/add/favorites', (req, res, next) => {
 //   console.log(req);
 
 //   Favorite.bulkCreate(req.body.favoritesArr)
@@ -119,19 +124,25 @@ app.post('/v1/new/favorite', (req, res, ) => {
 // });
 
 
-// app.delete('/v1/delete/favorite', (req, res, next) => {
-//   const { movieID, sessionID } = req.body
-//   Favorite.destroy({
-//     where: {
-//       movieID,
-//       sessionID
-//     }
-//   })
-//     .then((response) => {
-//       res.json(response);
-//     });
-//   next()
-// });
+app.delete('/v1/delete/favorite', (req, res, next) => {
+  const { movieID, sessionID } = req.body
+
+  try {
+    Favorite.destroy({
+      where: {
+        movieID,
+        sessionID
+      }
+    })
+      .then((response) => {
+        res.json(response);
+      });
+  }
+  catch (err) {
+    res.status(err.response ? err.response.status : 500).send(err.response ? err.response.data : 'Internal error')
+    next(err)
+  }
+});
 
 
 
