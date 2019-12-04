@@ -2,7 +2,7 @@
   "name": "my-app-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/models/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon $npm_package_main",
     "test": "echo \"Error: no test specified\" && exit 1",
