@@ -78,7 +78,6 @@ app.get('/v1/all', async (req, res, next) => {
 
   try {
     await Favorite.findAll()
-
   } catch (err) {
     next(err)
   }
@@ -90,7 +89,6 @@ app.post('/v1/new/favorite', (req, res, next) => {
   const { poster_path, title, release_date, original_language, vote_count, vote_average, overview, movieID, sessionID } = req.body
 
   try {
-
     Favorite.create({
       poster_path,
       title,
@@ -112,18 +110,6 @@ app.post('/v1/new/favorite', (req, res, next) => {
 });
 
 
-// app.post('/v1/add/favorites', (req, res, next) => {
-//   console.log(req);
-
-//   Favorite.bulkCreate(req.body.favoritesArr)
-//     .then((favoriteList) => {
-//       console.log(favoriteList);
-//       res.json(favoriteList);
-//     });
-//   next()
-// });
-
-
 app.delete('/v1/delete/favorite', (req, res, next) => {
   const { movieID, sessionID } = req.body
 
@@ -137,13 +123,26 @@ app.delete('/v1/delete/favorite', (req, res, next) => {
       .then((response) => {
         res.json(response);
       });
-  }
-  catch (err) {
+  } catch (err) {
     res.status(err.response ? err.response.status : 500).send(err.response ? err.response.data : 'Internal error')
     next(err)
   }
 });
 
+
+app.post('/v1/add/favorites', (req, res, next) => {
+  console.log(`favList:${req.body}`);
+  try {
+    Favorite.bulkCreate(req.body)
+      .then((favoriteList) => {
+        return res.json(favoriteList);
+      });
+  }
+  catch (err) {
+    console.log(err);
+    next(err)
+  }
+});
 
 
 app.listen(port, () => {
